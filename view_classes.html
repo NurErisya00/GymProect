@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <title>View Classes</title>
+</head>
+<body>
+    <h1>Classes List</h1>
+
+    {# --- Display flashed messages --- #}
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        <div>
+          {% for category, message in messages %}
+            <div class="alert-{{ category }}">{{ message }}</div> {# Use CSS classes for styling #}
+          {% endfor %}
+        </div>
+      {% endif %}
+    {% endwith %}
+
+    <table>
+        <thead>
+            <tr>
+                <th>Class Name</th>
+                <th>Time</th>
+            </tr>
+        </thead>
+        <tbody>
+            {# Loop through the 'classes' list passed from Python #}
+            {% if classes %} {# Check if the list is NOT empty #}
+                {% for class_item in classes %} {# Good practice: use a unique loop variable name #}
+                <tr>
+                    {# **** CRITICAL: Access data using dictionary keys **** #}
+                    <td>{{ class_item['class_name'] }}</td>
+                    <td>{{ class_item['class_time'] }}</td>
+                </tr>
+                {% endfor %}
+            {% else %} {# This part runs if the 'classes' list IS empty #}
+                <tr>
+                    <td colspan="2">No classes available.</td>
+                </tr>
+            {% endif %}
+        </tbody>
+    </table>
+
+    <br>
+    {% if session.get('role') == 'staff' %}
+     <a href="{{ url_for('add_class') }}">Add New Class</a>
+    {% endif %}
+    <a href="{{ url_for('dashboard') }}">Back to Dashboard</a>
+
+</body>
+</html>
